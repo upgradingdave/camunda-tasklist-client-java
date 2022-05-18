@@ -11,7 +11,7 @@ public class TaskListException extends Exception {
         super();
     }
 
-    public TaskListException(Exception e) {
+    public TaskListException(Throwable e) {
         super(e);
     }
 

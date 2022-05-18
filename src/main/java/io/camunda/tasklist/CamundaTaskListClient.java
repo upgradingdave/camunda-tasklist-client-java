@@ -18,12 +18,14 @@ import io.camunda.tasklist.client.ClaimTaskMutation;
 import io.camunda.tasklist.client.CompleteTaskMutation;
 import io.camunda.tasklist.client.GetTasksQuery;
 import io.camunda.tasklist.client.GetTasksWithVariableQuery;
+import io.camunda.tasklist.client.NewTaskSubscription;
 import io.camunda.tasklist.client.UnclaimTaskMutation;
 import io.camunda.tasklist.client.type.VariableInput;
 import io.camunda.tasklist.dto.Task;
 import io.camunda.tasklist.dto.TaskState;
 import io.camunda.tasklist.exception.TaskListException;
 import io.camunda.tasklist.util.ApolloUtils;
+import io.reactivex.rxjava3.core.Flowable;
 
 public class CamundaTaskListClient {
 
@@ -79,7 +81,19 @@ public class CamundaTaskListClient {
                 new GetTasksWithVariableQuery(optAssignee, optAssigned, optState, optPageSize, null, null, null));
         ApolloResponse<GetTasksWithVariableQuery.Data> response = execute(queryCall);
 
+
         return ApolloUtils.toTasks(response.data.tasks);
+    }
+    
+    public void subscribeToTasks(TaskConsumer taskConsumer) {
+        ApolloCall<NewTaskSubscription.Data> subscriptionCall  = apolloClient.subscription(new NewTaskSubscription());
+        
+        Flowable<ApolloResponse<NewTaskSubscription.Data>> subscriptionResponse = Rx3Apollo.flowable(subscriptionCall);
+        subscriptionResponse.subscribe(result-> {
+            taskConsumer.onNewTask(ApolloUtils.toTask(result.data));
+        }, t -> {
+            throw new TaskListException(t);
+        });
     }
 
     private <T extends Operation.Data> ApolloResponse<T> execute(ApolloCall<T> call) throws TaskListException {
@@ -105,6 +119,8 @@ public class CamundaTaskListClient {
         }
         return result;
     }
+    
+    
 
     private List<VariableInput> toVariableInput(Map<String, Object> variablesMap) {
         List<VariableInput> variables = new ArrayList<>();

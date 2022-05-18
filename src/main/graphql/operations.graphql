@@ -62,3 +62,24 @@ query GetTasksWithVariable($assignee: String, $assigned: Boolean, $state: TaskSt
 		}
 	}
 }
+
+subscription newTaskSubscription {
+  task {
+	 id
+	 name
+	 processName
+	 assignee
+	 creationTime
+	 taskState
+	 sortValues
+	 isFirst
+	 __typename
+	 variables {
+	 	id
+	 	name
+	 	previewValue
+	 	isValueTruncated
+	 	__typename
+	}
+  }
+}

@@ -117,3 +117,7 @@ type Mutation {
     # Delete process instance by given processInstanceId. Returns true if process instance could be deleted.
     deleteProcessInstance(processInstanceId: String!): Boolean!
 }
+
+type Subscription {
+	task: Task!
+}
