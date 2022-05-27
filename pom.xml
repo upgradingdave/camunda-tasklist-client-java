@@ -17,7 +17,7 @@
   </parent>
   
   <artifactId>camunda-tasklist-client-java</artifactId>
-  <version>0.0.16</version>
+  <version>0.0.17-SNAPSHOT</version>
   <name>camunda-tasklist-client-java</name>
   <description>Parent project for the TaskList API Java client</description>
   <packaging>pom</packaging>
