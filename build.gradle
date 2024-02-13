@@ -8,12 +8,13 @@ plugins {
 }
 
 group = 'io.camunda'
-version = '8.4.0.3'
+version = '8.4.0.4'
 
 sourceCompatibility = '11'
 
 repositories {
   mavenCentral()
+  mavenLocal()
 }
 
 ext {
@@ -29,7 +30,7 @@ dependencies {
   api "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jackson_version"
   api "org.openapitools:jackson-databind-nullable:0.2.1"
   api "jakarta.annotation:jakarta.annotation-api:$jakarta_annotation_version"
-  api "io.camunda.spring:java-common:8.4.0"
+  api "io.camunda.spring:java-common:8.4.0-alpha3-rc1-SNAPSHOT"
   
   testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
 }
@@ -70,7 +71,7 @@ spotlessJava.dependsOn tasks.named("openApiGenerate")
 
 compileJava.dependsOn tasks.named("spotlessApply")
 
-task sourceJar(type: Jar) {
+task sourceJar(type: Jar, dependsOn: openApiGenerate) {
   outputs.cacheIf { true }
   from sourceSets.main.allJava
   archiveClassifier = 'sources'
@@ -103,8 +104,8 @@ nexusPublishing {
 }
 
 signing {
-    useInMemoryPgpKeys(System.getenv("ORG_GRADLE_PROJECT_signingKey"), System.getenv("ORG_GRADLE_PROJECT_signingPassword"))
-    sign(publishing.publications)
+    //useInMemoryPgpKeys(System.getenv("ORG_GRADLE_PROJECT_signingKey"), System.getenv("ORG_GRADLE_PROJECT_signingPassword"))
+    //sign(publishing.publications)
 }
 
 publishing {
